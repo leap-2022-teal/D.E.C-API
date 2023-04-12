@@ -9,20 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCommentById = exports.getComments = void 0;
+exports.createNewCategory = exports.getCategoryById = exports.getCategory = void 0;
 const category_model_1 = require("./category.model");
-function getComments(req, res) {
+function getCategory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const list = yield category_model_1.category.find({}, null, { sort: { title: 1 }, limit: 100 });
+        const list = yield category_model_1.category.find({}, null, {
+            sort: { title: 1 },
+            limit: 100,
+        });
         res.json(list);
     });
 }
-exports.getComments = getComments;
-function getCommentById(req, res) {
+exports.getCategory = getCategory;
+function getCategoryById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params;
         const one = yield category_model_1.category.findById({ _id: id });
         res.json(one);
     });
 }
-exports.getCommentById = getCommentById;
+exports.getCategoryById = getCategoryById;
+function createNewCategory(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const newCategory = req.body;
+        console.log(newCategory);
+        yield category_model_1.category.create(newCategory);
+        res.sendStatus(200);
+    });
+}
+exports.createNewCategory = createNewCategory;

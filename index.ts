@@ -3,10 +3,8 @@ import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import mongoose from "mongoose";
 import { categoriesRouter } from "./modules/category/category.routes";
-import {Cloudinary} from '@cloudinary/url-gen'
 
 dotenv.config();
-
 
 mongoose
   .connect(`${process.env.MONGODB_STRING}`)
@@ -22,7 +20,7 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello" });
 });
 
-app.use("/categories" , categoriesRouter)
+app.use("/categories", categoriesRouter);
 app.listen(port, () => {
   console.log(`Server started at ${port} 🎉`);
 });
