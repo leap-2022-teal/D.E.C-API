@@ -1,15 +1,17 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { Model, model, Schema } from "mongoose";
 
-export interface Category{
-    name: string,
-    categoryId : mongoose.Schema.Types.ObjectId;
+interface SubCategories {
+  title: string;
 }
 
-const categorySchema = new Schema < Category > ({
-    name: { type: String, required: true },
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Movie" },
-}, {
-    timestamps: { createdAt: "date", updatedAt: false },
+interface Category {
+  name: string;
+  subCategories: SubCategories[];
 }
-)
-export const category = model<Category>("Category", categorySchema);
+
+const CategorySchema = new Schema<Category>({
+  name: { type: String },
+  subCategories: [{ title: String }],
+});
+
+export const category = model("Category", CategorySchema);

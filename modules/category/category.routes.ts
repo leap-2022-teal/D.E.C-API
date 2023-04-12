@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { getCommentById, getComments } from "./category.controller";
+import {
+  createNewCategory,
+  getCategory,
+  getCategoryById,
+} from "./category.controller";
 
 const router = Router();
 
-router.get("/", getComments);
-router.get("/:id", getCommentById);
+router.get("/", getCategory);
+router.get("/:id", getCategoryById);
+router.post("/", createNewCategory);
 export const categoriesRouter = router;
