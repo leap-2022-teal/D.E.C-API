@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createNewCategory = exports.getCategoryById = exports.getCategory = void 0;
+exports.updateCategoryById = exports.deleteCategoryById = exports.createNewCategory = exports.getCategoryById = exports.getCategory = void 0;
 const category_model_1 = require("./category.model");
 function getCategory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -38,3 +38,20 @@ function createNewCategory(req, res) {
     });
 }
 exports.createNewCategory = createNewCategory;
+function deleteCategoryById(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { id } = req.params;
+        yield category_model_1.category.findByIdAndRemove({ _id: id });
+        res.json({ removedId: id });
+    });
+}
+exports.deleteCategoryById = deleteCategoryById;
+function updateCategoryById(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { id } = req.params;
+        const updatedFields = req.body;
+        yield category_model_1.category.findByIdAndUpdate({ _id: id }, updatedFields);
+        res.json({ updatedId: id });
+    });
+}
+exports.updateCategoryById = updateCategoryById;
