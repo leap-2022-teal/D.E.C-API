@@ -1,4 +1,4 @@
-import mongoose, { Model, model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 interface SubCategories {
   title: string;
