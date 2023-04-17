@@ -8,7 +8,8 @@
     "mongoose": "^7.0.3",
     "multer": "^1.4.5-lts.1",
     "next-cloudinary": "^4.4.0",
-    "node": "^19.8.1"
+    "node": "^19.8.1",
+    "uuid": "^9.0.0"
   },
   "name": "dec-api",
   "version": "1.0.0",
@@ -16,7 +17,9 @@
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/multer": "^1.4.7",
     "@types/node": "^18.15.11",
+    "@types/uuid": "^9.0.1",
     "concurrently": "^8.0.1",
     "nodemon": "^2.0.22",
     "typescript": "^5.0.3"
