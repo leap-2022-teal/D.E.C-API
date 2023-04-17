@@ -9,49 +9,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProductById = exports.deleteProductById = exports.createNewProduct = exports.getProductById = exports.getProduct = void 0;
-const product_model_1 = require("./product.model");
-function getProduct(req, res) {
+exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
+const users_model_1 = require("./users.model");
+function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const list = yield product_model_1.products.find({}, null, {
-            sort: { title: 1 },
-            limit: 100,
-        });
+        const list = yield users_model_1.users.find({}, null);
         res.json(list);
     });
 }
-exports.getProduct = getProduct;
-function getProductById(req, res) {
+exports.getUsers = getUsers;
+function getUsersById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params;
-        const one = yield product_model_1.products.findById({ _id: id });
+        const one = yield users_model_1.users.findById({ _id: id });
         res.json(one);
     });
 }
-exports.getProductById = getProductById;
-function createNewProduct(req, res) {
+exports.getUsersById = getUsersById;
+function createNewUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newProduct = req.body;
         console.log(newProduct);
-        yield product_model_1.products.create(newProduct);
+        yield users_model_1.users.create(newProduct);
         res.sendStatus(200);
     });
 }
-exports.createNewProduct = createNewProduct;
-function deleteProductById(req, res) {
+exports.createNewUsers = createNewUsers;
+function deleteUsersById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
-        yield product_model_1.products.findByIdAndRemove({ _id: id });
+        yield users_model_1.users.findByIdAndRemove({ _id: id });
         res.json({ removedId: id });
     });
 }
-exports.deleteProductById = deleteProductById;
-function updateProductById(req, res) {
+exports.deleteUsersById = deleteUsersById;
+function updateUsersById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
         const updatedFields = req.body;
-        yield product_model_1.products.findByIdAndUpdate({ _id: id }, updatedFields);
+        yield users_model_1.users.findByIdAndUpdate({ _id: id }, updatedFields);
         res.json({ updatedId: id });
     });
 }
-exports.updateProductById = updateProductById;
+exports.updateUsersById = updateUsersById;

@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import mongoose from "mongoose";
 import { categoriesRouter } from "./modules/category/category.routes";
-import { product } from "./modules/products/product.model";
 import { productRouter } from "./modules/products/product.routes";
+import { usersRouter } from "./modules/users/users.routes";
 
 dotenv.config();
 
@@ -23,7 +23,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/categories", categoriesRouter);
-app.use("/product", productRouter);
+app.use("/products", productRouter);
+app.use("/users", usersRouter);
 app.listen(port, () => {
   console.log(`Server started at ${port} 🎉`);
 });
