@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.product = void 0;
+exports.products = void 0;
 const mongoose_1 = require("mongoose");
 const productsScema = new mongoose_1.Schema({
     name: { type: String },
@@ -18,4 +18,4 @@ const productsScema = new mongoose_1.Schema({
     categoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "category" },
     subId: { type: mongoose_1.Schema.Types.ObjectId, ref: "category.subCategories" },
 });
-exports.product = (0, mongoose_1.model)("Products", productsScema);
+exports.products = (0, mongoose_1.model)("Products", productsScema);

@@ -28,4 +28,4 @@ const productsScema = new Schema<Products>({
   categoryId: { type: Schema.Types.ObjectId, ref: "category" },
   subId: { type: Schema.Types.ObjectId, ref: "category.subCategories" },
 });
-export const product = model("Products", productsScema);
+export const products = model("Products", productsScema);
