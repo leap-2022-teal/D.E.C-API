@@ -9,6 +9,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const category_routes_1 = require("./modules/category/category.routes");
 const product_routes_1 = require("./modules/products/product.routes");
+const users_routes_1 = require("./modules/users/users.routes");
 dotenv_1.default.config();
 mongoose_1.default
     .connect(`${process.env.MONGODB_STRING}`)
@@ -21,7 +22,8 @@ app.get("/", (req, res) => {
     res.json({ message: "Hello" });
 });
 app.use("/categories", category_routes_1.categoriesRouter);
-app.use("/product", product_routes_1.productRouter);
+app.use("/products", product_routes_1.productRouter);
+app.use("/users", users_routes_1.usersRouter);
 app.listen(port, () => {
     console.log(`Server started at ${port} 🎉`);
 });
