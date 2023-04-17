@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { categoriesRouter } from "./modules/category/category.routes";
 import { productRouter } from "./modules/products/product.routes";
 import { usersRouter } from "./modules/users/users.routes";
-import { CldImage, CldImageProps } from "next-cloudinary";
+// import { CldImage, CldImageProps } from "next-cloudinary";
 dotenv.config();
 
 mongoose
