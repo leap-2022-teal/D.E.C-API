@@ -1,30 +1,34 @@
 import { model, ObjectId, Schema } from "mongoose";
 
+interface Stock {
+  size: number;
+  stock: number;
+}
+
 interface Products {
   name: string;
-  color: string;
+  color: string[];
   image: {};
-  size: number[];
+  sizes: Stock[];
   details: string;
   brand: string;
   price: number;
-  stock: number;
   categoryId: ObjectId;
   subId: ObjectId;
 }
 const productsScema = new Schema<Products>({
   name: { type: String },
-  color: { type: String },
+  color: [String],
   image: {
     path: String,
     width: Number,
     height: Number,
   },
-  size: [Number],
+  sizes: [{ size: Number, stock: Number }],
   details: { type: String },
-  brand: { type: String },
+  brand: { type: String, nullable: true },
   price: { type: Number },
-  stock: { type: Number },
+
   categoryId: { type: Schema.Types.ObjectId, ref: "category" },
   subId: { type: Schema.Types.ObjectId, ref: "category.subCategories" },
 });

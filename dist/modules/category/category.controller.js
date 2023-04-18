@@ -33,8 +33,13 @@ function createNewCategory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newCategory = req.body;
         console.log(newCategory);
-        yield category_model_1.category.create(newCategory);
-        res.sendStatus(200);
+        try {
+            yield category_model_1.category.create(newCategory);
+            res.sendStatus(200);
+        }
+        catch (_a) {
+            res.json({ status: 400, message: "Something went wrong" });
+        }
     });
 }
 exports.createNewCategory = createNewCategory;
@@ -50,8 +55,13 @@ function updateCategoryById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
         const updatedFields = req.body;
-        yield category_model_1.category.findByIdAndUpdate({ _id: id }, updatedFields);
-        res.json({ updatedId: id });
+        try {
+            yield category_model_1.category.findByIdAndUpdate({ _id: id }, updatedFields);
+            res.json({ updatedId: id });
+        }
+        catch (_a) {
+            res.json({ status: 400, message: "Something went wrong" });
+        }
     });
 }
 exports.updateCategoryById = updateCategoryById;
