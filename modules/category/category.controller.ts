@@ -17,8 +17,12 @@ export async function getCategoryById(req: Request, res: Response) {
 export async function createNewCategory(req: Request, res: Response) {
   const newCategory = req.body;
   console.log(newCategory);
-  await category.create(newCategory);
-  res.sendStatus(200);
+  try {
+    await category.create(newCategory);
+    res.sendStatus(200);
+  } catch {
+    res.json({ status: 400, message: "Something went wrong" });
+  }
 }
 export async function deleteCategoryById(req: Request, res: Response) {
   const { id } = req.params;
@@ -28,6 +32,10 @@ export async function deleteCategoryById(req: Request, res: Response) {
 export async function updateCategoryById(req: Request, res: Response) {
   const { id } = req.params;
   const updatedFields = req.body;
-  await category.findByIdAndUpdate({ _id: id }, updatedFields);
-  res.json({ updatedId: id });
+  try {
+    await category.findByIdAndUpdate({ _id: id }, updatedFields);
+    res.json({ updatedId: id });
+  } catch {
+    res.json({ status: 400, message: "Something went wrong" });
+  }
 }

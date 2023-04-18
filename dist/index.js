@@ -53,12 +53,14 @@ app.get("/", (req, res) => {
 });
 app.post("/upload-image", upload.single("image"), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const cloudinaryImage = yield cloudinary_1.v2.uploader.upload(req.file.path);
-        return res.json({
-            path: cloudinaryImage.secure_url,
-            width: cloudinaryImage.width,
-            height: cloudinaryImage.height,
-        });
+        if (req.file) {
+            const cloudinaryImage = yield cloudinary_1.v2.uploader.upload(req.file.path);
+            return res.json({
+                path: cloudinaryImage.secure_url,
+                width: cloudinaryImage.width,
+                height: cloudinaryImage.height,
+            });
+        }
     });
 });
 app.use("/categories", category_routes_1.categoriesRouter);
