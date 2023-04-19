@@ -24,12 +24,16 @@ const productsScema = new Schema<Products>({
     width: Number,
     height: Number,
   },
-  sizes: [{ size: Number, stock: Number }],
+  sizes: [{ size: Number, stock: Number }, { nullable: true }],
   details: { type: String },
   brand: { type: String, nullable: true },
   price: { type: Number },
 
   categoryId: { type: Schema.Types.ObjectId, ref: "category" },
-  subId: { type: Schema.Types.ObjectId, ref: "category.subCategories" },
+  subId: {
+    type: Schema.Types.ObjectId,
+    ref: "category.subCategories",
+    nullable: true,
+  },
 });
 export const products = model("Products", productsScema);

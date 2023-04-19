@@ -32,6 +32,7 @@ exports.getProductById = getProductById;
 function createNewProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newProduct = req.body;
+        console.log(req.body);
         console.log(newProduct);
         yield product_model_1.products.create(newProduct);
         res.sendStatus(200);
