@@ -15,6 +15,7 @@ export async function getProductById(req: Request, res: Response) {
 }
 export async function createNewProduct(req: Request, res: Response) {
   const newProduct = req.body;
+  console.log(req.body);
   console.log(newProduct);
   await products.create(newProduct);
   res.sendStatus(200);

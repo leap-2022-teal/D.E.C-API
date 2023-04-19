@@ -10,11 +10,15 @@ const productsScema = new mongoose_1.Schema({
         width: Number,
         height: Number,
     },
-    sizes: [{ size: Number, stock: Number }],
+    sizes: [{ size: Number, stock: Number }, { nullable: true }],
     details: { type: String },
     brand: { type: String, nullable: true },
     price: { type: Number },
     categoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "category" },
-    subId: { type: mongoose_1.Schema.Types.ObjectId, ref: "category.subCategories" },
+    subId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "category.subCategories",
+        nullable: true,
+    },
 });
 exports.products = (0, mongoose_1.model)("Products", productsScema);
