@@ -7,22 +7,22 @@ interface Stock {
 
 interface Products {
   name: string;
-  color: string[];
-  image: {};
+  color: string;
+  image?: {};
   sizes: Stock[];
   details: string;
-  brand: string;
+  brand?: string;
   price: number;
   categoryId: ObjectId;
-  subId: ObjectId;
+  subId?: ObjectId;
 }
 const productsScema = new Schema<Products>({
   name: { type: String },
-  color: [String],
+  color: { type: String },
   image: {
-    path: String,
-    width: Number,
-    height: Number,
+    path: { type: String, default: "" },
+    width: { type: Number, default: 0 },
+    height: { type: Number, default: 0 },
   },
   sizes: [{ size: Number, stock: Number }, { nullable: true }],
   details: { type: String },
