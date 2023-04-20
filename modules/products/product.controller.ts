@@ -17,7 +17,7 @@ export async function createNewProduct(req: Request, res: Response) {
   const newProduct = req.body;
   console.log(req.body);
   console.log(newProduct);
-  await products.create(newProduct);
+  await products.create(newProduct.data);
   res.sendStatus(200);
 }
 export async function deleteProductById(req: Request, res: Response) {

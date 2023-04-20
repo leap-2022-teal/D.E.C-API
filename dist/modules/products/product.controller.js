@@ -34,7 +34,7 @@ function createNewProduct(req, res) {
         const newProduct = req.body;
         console.log(req.body);
         console.log(newProduct);
-        yield product_model_1.products.create(newProduct);
+        yield product_model_1.products.create(newProduct.data);
         res.sendStatus(200);
     });
 }
