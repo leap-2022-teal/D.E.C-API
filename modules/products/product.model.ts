@@ -14,6 +14,7 @@ interface Products {
   brand?: string;
   price: number;
   categoryId: ObjectId;
+  subCategoryId: ObjectId;
 }
 const productsScema = new Schema<Products>({
   name: { type: String },
@@ -29,5 +30,6 @@ const productsScema = new Schema<Products>({
   price: { type: Number },
 
   categoryId: { type: Schema.Types.ObjectId, ref: "category.categoryId" },
+  subCategoryId: { type: Schema.Types.ObjectId, ref: "category.categoryId" },
 });
 export const products = model("Products", productsScema);
