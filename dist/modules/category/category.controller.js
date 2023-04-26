@@ -49,6 +49,7 @@ function deleteCategoryById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
         yield category_model_1.category.findByIdAndRemove({ _id: id });
+        yield category_model_1.category.deleteMany({ parentId: id });
         res.status(200);
     });
 }
