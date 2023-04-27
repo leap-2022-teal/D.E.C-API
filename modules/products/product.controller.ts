@@ -2,10 +2,9 @@ import { Request, Response } from "express";
 import { products } from "./product.model";
 
 export async function getProduct(req: Request, res: Response) {
-  const list = await products.find({}, null, {
-    sort: { title: 1 },
-    limit: 100,
-  });
+  const { q } = req.query;
+  const qregex = new RegExp(`${q}`, "i");
+  const list = await products.find({ name: qregex }, "", { sort: { name: 1 } });
   res.json(list);
 }
 export async function getProductById(req: Request, res: Response) {
