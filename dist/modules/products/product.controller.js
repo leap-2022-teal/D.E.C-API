@@ -13,10 +13,9 @@ exports.updateProductById = exports.deleteProductById = exports.createNewProduct
 const product_model_1 = require("./product.model");
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const list = yield product_model_1.products.find({}, null, {
-            sort: { title: 1 },
-            limit: 100,
-        });
+        const { q } = req.query;
+        const qregex = new RegExp(`${q}`, "i");
+        const list = yield product_model_1.products.find({ name: qregex }, "", { sort: { name: 1 } });
         res.json(list);
     });
 }
