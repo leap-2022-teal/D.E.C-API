@@ -2,13 +2,9 @@ import { Request, Response } from "express";
 import { category } from "./category.model";
 
 export async function getCategory(req: Request, res: Response) {
-  const list = await category
-    .find({}, null, {
-      sort: { name: 1 },
-      limit: 100,
-    })
-    .populate("parent");
-
+  const { q } = req.query;
+  const qregex = new RegExp(`${q}`, "i");
+  const list = await category.find({ name: qregex }, "", { sort: { name: 1 } });
   res.json(list);
 }
 

@@ -13,12 +13,9 @@ exports.updateCategoryById = exports.deleteCategoryById = exports.createNewCateg
 const category_model_1 = require("./category.model");
 function getCategory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const list = yield category_model_1.category
-            .find({}, null, {
-            sort: { name: 1 },
-            limit: 100,
-        })
-            .populate("parent");
+        const { q } = req.query;
+        const qregex = new RegExp(`${q}`, "i");
+        const list = yield category_model_1.category.find({ name: qregex }, "", { sort: { name: 1 } });
         res.json(list);
     });
 }
