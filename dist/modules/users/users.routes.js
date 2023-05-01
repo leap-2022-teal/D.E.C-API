@@ -9,4 +9,5 @@ router.get("/:id", users_controller_1.getUsersById);
 router.post("/:id", users_controller_1.createNewUsers);
 router.delete("/:id", users_controller_1.deleteUsersById);
 router.put("/:id", users_controller_1.updateUsersById);
+router.post("/", users_controller_1.adminAuthentication);
 exports.usersRouter = router;
