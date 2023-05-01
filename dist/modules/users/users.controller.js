@@ -64,7 +64,7 @@ function adminAuthentication(req, res) {
         console.log("one: ", one);
         console.log("password: ", password);
         if (one && one.password == password) {
-            const token = jsonwebtoken_1.default.sign({ users: users_model_1.users }, `${process.env.JWT_SECRET}`);
+            const token = jsonwebtoken_1.default.sign({ users_id: one._id }, `${process.env.JWT_SECRET}`);
             console.log(token);
             res.status(200).json({ token: token });
             //  bcrypt.compare(password, one.password, function (err : any, result : any) { 
