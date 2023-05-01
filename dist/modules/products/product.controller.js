@@ -13,10 +13,18 @@ exports.updateProductById = exports.deleteProductById = exports.createNewProduct
 const product_model_1 = require("./product.model");
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { q } = req.query;
-        const qregex = new RegExp(`${q}`, "i");
-        const list = yield product_model_1.products.find({ name: qregex }, "", { sort: { name: 1 } });
-        res.json(list);
+        const { searchQuery } = req.query;
+        const { categoryId } = req.query;
+        const qregex = new RegExp(`${searchQuery}`, "i");
+        // console.log(req);
+        if (categoryId) {
+            const list = yield product_model_1.products.find({ $and: [{ name: qregex }, { categoryId: categoryId }] }, "", { sort: { name: 1 } });
+            res.json(list);
+        }
+        else {
+            const list = yield product_model_1.products.find({ name: qregex }, "", { sort: { name: 1 } });
+            res.json(list);
+        }
     });
 }
 exports.getProduct = getProduct;
