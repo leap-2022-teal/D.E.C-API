@@ -11,9 +11,9 @@ export async function getBannerById(req: Request, res: Response) {
   res.json(one);
 }
 export async function createNewBanner(req: Request, res: Response) {
-  const newProduct = req.body;
-  console.log(newProduct);
-  await Banner.create(newProduct);
+  const newBanner = req.body;
+  console.log(newBanner);
+  await Banner.create(newBanner);
   res.sendStatus(200);
 }
 export async function deleteBannerById(req: Request, res: Response) {
@@ -26,4 +26,5 @@ export async function updateBannerById(req: Request, res: Response) {
   const updatedFields = req.body;
   await Banner.findByIdAndUpdate({ _id: id }, updatedFields);
   res.json({ updatedId: id });
+  console.log(updatedFields)
 }

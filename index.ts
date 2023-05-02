@@ -3,12 +3,12 @@ import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import mongoose from "mongoose";
 import { categoriesRouter } from "./modules/category/category.routes";
-import { productRouter } from "./modules/products/product.routes";
 import { usersRouter } from "./modules/users/users.routes";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
 import { bannerRouter } from "./modules/banner/banner.routes";
+import { productRouter } from "./modules/products/product.routes";
 dotenv.config();
 
 mongoose.connect(`${process.env.MONGODB_STRING}`).then(() => console.log("MongoDB Connected ✅"));

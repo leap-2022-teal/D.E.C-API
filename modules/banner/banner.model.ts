@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 interface Banner {
   name: string;
-  image: { path: string; width: string; height: string };
+  image?: {  };
   details: string;
   link: string;
 }
