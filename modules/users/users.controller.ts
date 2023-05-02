@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import { users } from "./users.model";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
-   
 
 export async function getUsers(req: Request, res: Response) {
   const list = await users.find({}, null);
@@ -32,20 +30,19 @@ export async function updateUsersById(req: Request, res: Response) {
   res.json({ updatedId: id });
 }
 
-
 //  login autherzation admin
 
 export async function adminAuthentication(req: Request, res: Response) {
-  const {email ,password} = req.body;
-  const one = await users.findOne({email : email});
-  console.log("one: ",one)
-  console.log("password: ",password)
+  const { email, password } = req.body;
+  const one = await users.findOne({ email: email });
+  console.log("one: ", one);
+  console.log("password: ", password);
   if (one && one.password == password) {
-    const token = jwt.sign({users_id : one._id}, `${process.env.JWT_SECRET}`)
-       console.log(token)
-       res.status(200).json({token : token})
-  //  bcrypt.compare(password, one.password, function (err : any, result : any) { 
-  //   console.log(result)
+    const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
+    console.log(token);
+    res.status(200).json({ token: token });
+    //  bcrypt.compare(password, one.password, function (err : any, result : any) {
+    //   console.log(result)
     //  if(result){
     //    const token = jwt.sign({users_id : one._id}, `${process.env.JWT_SECRET}`)
     //    console.log(token)
@@ -53,10 +50,9 @@ export async function adminAuthentication(req: Request, res: Response) {
     //  } else {
     //    res.status(400).json({ message: "Something went wrong" });
     //  }
-  //  })
-  console.log("yes authenticated")
-  
+    //  })
+    console.log("yes authenticated");
   } else {
-   res.status(400).json({message : "Something went wrong" })
+    res.status(400).json({ message: "Something went wrong" });
   }
- }
+}
