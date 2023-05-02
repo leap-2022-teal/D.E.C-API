@@ -17,12 +17,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const category_routes_1 = require("./modules/category/category.routes");
-const product_routes_1 = require("./modules/products/product.routes");
 const users_routes_1 = require("./modules/users/users.routes");
 const multer_1 = __importDefault(require("multer"));
 const uuid_1 = require("uuid");
 const cloudinary_1 = require("cloudinary");
 const banner_routes_1 = require("./modules/banner/banner.routes");
+const product_routes_1 = require("./modules/products/product.routes");
 dotenv_1.default.config();
 mongoose_1.default.connect(`${process.env.MONGODB_STRING}`).then(() => console.log("MongoDB Connected ✅"));
 cloudinary_1.v2.config({

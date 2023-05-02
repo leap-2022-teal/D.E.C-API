@@ -4,7 +4,7 @@ import { createNewBanner, deleteBannerById, getBanner, getBannerById, updateBann
 const router = Router();
 router.get("/", getBanner);
 router.get("/:id", getBannerById);
-router.post("/:id", createNewBanner);
+router.post("/", createNewBanner);
 router.delete("/:id", deleteBannerById);
 router.put("/:id", updateBannerById);
 
