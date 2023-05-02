@@ -39,9 +39,12 @@ export async function createNewCategory(req: Request, res: Response) {
 }
 export async function deleteCategoryById(req: Request, res: Response) {
   const { id } = req.params;
-  await category.findByIdAndRemove({ _id: id });
-  await category.deleteMany({ parentId: id });
-  res.status(200);
+  try {
+    await category.findByIdAndRemove({ _id: id });
+    res.status(200);
+  } catch {
+    res.json({ status: 400, message: "Something went wrong" });
+  }
 }
 export async function updateCategoryById(req: Request, res: Response) {
   const { id } = req.params;

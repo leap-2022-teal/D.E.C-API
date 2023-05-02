@@ -22,10 +22,9 @@ const users_routes_1 = require("./modules/users/users.routes");
 const multer_1 = __importDefault(require("multer"));
 const uuid_1 = require("uuid");
 const cloudinary_1 = require("cloudinary");
+const banner_routes_1 = require("./modules/banner/banner.routes");
 dotenv_1.default.config();
-mongoose_1.default
-    .connect(`${process.env.MONGODB_STRING}`)
-    .then(() => console.log("MongoDB Connected ✅"));
+mongoose_1.default.connect(`${process.env.MONGODB_STRING}`).then(() => console.log("MongoDB Connected ✅"));
 cloudinary_1.v2.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -66,6 +65,7 @@ app.post("/upload-image", upload.single("image"), function (req, res, next) {
 app.use("/categories", category_routes_1.categoriesRouter);
 app.use("/products", product_routes_1.productRouter);
 app.use("/users", users_routes_1.usersRouter);
+app.use("/banner", banner_routes_1.bannerRouter);
 app.listen(port, () => {
     console.log(`Server started at ${port} 🎉`);
 });
