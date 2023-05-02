@@ -1,6 +1,6 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Express, NextFunction, Request, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import mongoose from "mongoose";
 import { categoriesRouter } from "./modules/category/category.routes";
 import { productRouter } from "./modules/products/product.routes";
@@ -8,11 +8,10 @@ import { usersRouter } from "./modules/users/users.routes";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
+import { bannerRouter } from "./modules/banner/banner.routes";
 dotenv.config();
 
-mongoose
-  .connect(`${process.env.MONGODB_STRING}`)
-  .then(() => console.log("MongoDB Connected ✅"));
+mongoose.connect(`${process.env.MONGODB_STRING}`).then(() => console.log("MongoDB Connected ✅"));
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -43,23 +42,20 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello" });
 });
 
-app.post(
-  "/upload-image",
-  upload.single("image"),
-  async function (req: Request, res: Response, next) {
-    if (req.file) {
-      const cloudinaryImage = await cloudinary.uploader.upload(req.file.path);
-      return res.json({
-        path: cloudinaryImage.secure_url,
-        width: cloudinaryImage.width,
-        height: cloudinaryImage.height,
-      });
-    }
+app.post("/upload-image", upload.single("image"), async function (req: Request, res: Response, next) {
+  if (req.file) {
+    const cloudinaryImage = await cloudinary.uploader.upload(req.file.path);
+    return res.json({
+      path: cloudinaryImage.secure_url,
+      width: cloudinaryImage.width,
+      height: cloudinaryImage.height,
+    });
   }
-);
+});
 app.use("/categories", categoriesRouter);
 app.use("/products", productRouter);
 app.use("/users", usersRouter);
+app.use("/banner", bannerRouter);
 app.listen(port, () => {
   console.log(`Server started at ${port} 🎉`);
 });
