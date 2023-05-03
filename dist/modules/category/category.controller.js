@@ -64,11 +64,17 @@ function deleteCategoryById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
         try {
-            yield category_model_1.category.findByIdAndRemove({ _id: id });
-            res.status(200);
+            const deletedCategory = yield category_model_1.category.findByIdAndRemove({ _id: id });
+            if (!deletedCategory) {
+                res.status(404).json({ message: "Category not found" });
+            }
+            else {
+                res.status(200).json({ message: "Category deleted successfully" });
+            }
         }
-        catch (_a) {
-            res.json({ status: 400, message: "Something went wrong" });
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error" });
         }
     });
 }
