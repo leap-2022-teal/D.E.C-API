@@ -40,12 +40,18 @@ export async function createNewCategory(req: Request, res: Response) {
 export async function deleteCategoryById(req: Request, res: Response) {
   const { id } = req.params;
   try {
-    await category.findByIdAndRemove({ _id: id });
-    res.status(200);
-  } catch {
-    res.json({ status: 400, message: "Something went wrong" });
+    const deletedCategory = await category.findByIdAndRemove({ _id: id });
+    if (!deletedCategory) {
+      res.status(404).json({ message: "Category not found" });
+    } else {
+      res.status(200).json({ message: "Category deleted successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 }
+
 export async function updateCategoryById(req: Request, res: Response) {
   const { id } = req.params;
   const updatedFields = req.body;
