@@ -4,7 +4,7 @@ interface Users {
   userName: string;
   email: string;
   password: string;
-  role: string;
+  role?: string;
 }
 const usersSchema = new Schema<Users>({
   userName: { type: String },
