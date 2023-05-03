@@ -10,5 +10,5 @@ router.post("/register", users_controller_1.createNewUsers);
 router.post("/login", users_controller_1.userAuthentication);
 router.delete("/:id", users_controller_1.deleteUsersById);
 router.put("/:id", users_controller_1.updateUsersById);
-router.post("/", users_controller_1.adminAuthentication);
+router.post("/", users_controller_1.userAuthentication);
 exports.usersRouter = router;
