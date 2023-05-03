@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userAuthentication = exports.adminAuthentication = exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
-const bcrypt = require('bcrypt');
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -35,7 +35,7 @@ function createNewUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { formData } = req.body;
         const myPlaintextPassword = formData.password;
-        bcrypt.hash(myPlaintextPassword, 10, function (err, hash) {
+        bcrypt_1.default.hash(myPlaintextPassword, 10, function (err, hash) {
             return __awaiter(this, void 0, void 0, function* () {
                 formData.password = hash;
                 console.log(formData);
@@ -69,26 +69,6 @@ function updateUsersById(req, res) {
     });
 }
 exports.updateUsersById = updateUsersById;
-function userAuthentication(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { email, password } = req.body;
-        const one = yield users_model_1.users.findOne({ email });
-        if (one) {
-            bcrypt.compare(password, one.password, function (err, result) {
-                if (result) {
-                    res.status(200).json(one);
-                }
-                else {
-                    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-                }
-            });
-        }
-        else {
-            res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-        }
-    });
-}
-exports.userAuthentication = userAuthentication;
 //  login autherzation admin
 function adminAuthentication(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -118,3 +98,24 @@ function adminAuthentication(req, res) {
     });
 }
 exports.adminAuthentication = adminAuthentication;
+//  login autherzation admin
+function userAuthentication(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { email, password } = req.body;
+        const one = yield users_model_1.users.findOne({ email });
+        if (one) {
+            bcrypt_1.default.compare(password, one.password, function (err, result) {
+                if (result) {
+                    res.status(200).json(one);
+                }
+                else {
+                    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+                }
+            });
+        }
+        else {
+            res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+        }
+    });
+}
+exports.userAuthentication = userAuthentication;
