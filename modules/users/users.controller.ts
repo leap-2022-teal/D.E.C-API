@@ -13,18 +13,18 @@ export async function getUsersById(req: Request, res: Response) {
   res.json(one);
 }
 export async function createNewUsers(req: Request, res: Response) {
-  const {formData} = req.body;
-  const myPlaintextPassword = formData.password
-  bcrypt.hash(myPlaintextPassword, 10, async function (err:any, hash:any) {
-    formData.password = hash
-    console.log(formData)
-    try{
-      await users.create(formData)
-      res.sendStatus(200)
-    }  catch (error) {
-      res.status(400).json({error})
+  const { formData } = req.body;
+  const myPlaintextPassword = formData.password;
+  bcrypt.hash(myPlaintextPassword, 10, async function (err: any, hash: any) {
+    formData.password = hash;
+    console.log(formData);
+    try {
+      await users.create(formData);
+      res.sendStatus(200);
+    } catch (error) {
+      res.status(400).json({ error });
     }
-  })
+  });
   res.sendStatus(200);
 }
 
@@ -42,46 +42,19 @@ export async function updateUsersById(req: Request, res: Response) {
 
 //  login autherzation admin
 
-export async function adminAuthentication(req: Request, res: Response) {
+export async function userAuthentication(req: Request, res: Response) {
   const { email, password } = req.body;
-  const one = await users.findOne({ email: email });
-  console.log("one: ", one);
-  console.log("password: ", password);
-  if (one && one.password == password) {
-    const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
-    console.log(token);
-    res.status(200).json({ token: token });
-    //  bcrypt.compare(password, one.password, function (err : any, result : any) {
-    //   console.log(result)
-    //  if(result){
-    //    const token = jwt.sign({users_id : one._id}, `${process.env.JWT_SECRET}`)
-    //    console.log(token)
-    //    res.status(200).json({token : token})
-    //  } else {
-    //    res.status(400).json({ message: "Something went wrong" });
-    //  }
-    //  })
-    console.log("yes authenticated");
-  } else {
-    res.status(400).json({ message: "Something went wrong" });
-  }
-}
-
-//  login autherzation admin
-
-
-export async function userAuthentication(req :Request, res: Response) {
-  const {email, password} = req.body
-  const one : any = await users.findOne({email})
-  if(one){
-    bcrypt.compare(password, one.password, function (err:any, result: any){
-      if(result) {
-        res.status(200).json(one)
+  const one: any = await users.findOne({ email });
+  if (one) {
+    bcrypt.compare(password, one.password, function (err: any, result: any) {
+      if (result) {
+        // const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
+        res.status(200).json({ one });
       } else {
-        res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" })
+        res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
       }
     });
   } else {
-    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" })
+    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
   }
 }
