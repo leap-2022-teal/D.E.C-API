@@ -1,15 +1,25 @@
 import { Request, Response } from "express";
 import { category } from "./category.model";
+import mongoose from "mongoose";
 
 export async function getCategory(req: Request, res: Response) {
-  const list = await category
-    .find({}, null, {
-      sort: { name: 1 },
-      limit: 100,
-    })
-    .populate("parent");
+  const { q } = req.query;
+  const parentId = req.query.parentId as string | undefined;
+  const qregex = new RegExp(`${q}`, "i");
 
-  res.json(list);
+  if (parentId) {
+    try {
+      const objParentId = new mongoose.Types.ObjectId(parentId);
+      const list = await category.find({ $or: [{ name: qregex }, { parentId: objParentId }] }, "", { sort: { name: 1 } });
+      res.json(list);
+      console.log(list);
+    } catch (error) {
+      res.status(400).send("Invalid parentId");
+    }
+  } else {
+    const list = await category.find({ name: qregex }, "", { sort: { name: 1 } });
+    res.json(list);
+  }
 }
 
 export async function getCategoryById(req: Request, res: Response) {
@@ -29,9 +39,19 @@ export async function createNewCategory(req: Request, res: Response) {
 }
 export async function deleteCategoryById(req: Request, res: Response) {
   const { id } = req.params;
-  await category.findByIdAndRemove({ _id: id });
-  res.status(200);
+  try {
+    const deletedCategory = await category.findByIdAndRemove({ _id: id });
+    if (!deletedCategory) {
+      res.status(404).json({ message: "Category not found" });
+    } else {
+      res.status(200).json({ message: "Category deleted successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 }
+
 export async function updateCategoryById(req: Request, res: Response) {
   const { id } = req.params;
   const updatedFields = req.body;

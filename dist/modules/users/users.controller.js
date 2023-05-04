@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
+exports.userAuthentication = exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const list = yield users_model_1.users.find({}, null);
@@ -28,9 +32,21 @@ function getUsersById(req, res) {
 exports.getUsersById = getUsersById;
 function createNewUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const newProduct = req.body;
-        console.log(newProduct);
-        yield users_model_1.users.create(newProduct);
+        const { formData } = req.body;
+        const myPlaintextPassword = formData.password;
+        bcrypt_1.default.hash(myPlaintextPassword, 10, function (err, hash) {
+            return __awaiter(this, void 0, void 0, function* () {
+                formData.password = hash;
+                console.log(formData);
+                try {
+                    yield users_model_1.users.create(formData);
+                    res.sendStatus(200);
+                }
+                catch (error) {
+                    res.status(400).json({ error });
+                }
+            });
+        });
         res.sendStatus(200);
     });
 }
@@ -52,3 +68,25 @@ function updateUsersById(req, res) {
     });
 }
 exports.updateUsersById = updateUsersById;
+//  login autherzation admin
+function userAuthentication(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { email, password } = req.body;
+        const one = yield users_model_1.users.findOne({ email });
+        if (one) {
+            bcrypt_1.default.compare(password, one.password, function (err, result) {
+                if (result) {
+                    // const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
+                    res.status(200).json({ one });
+                }
+                else {
+                    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+                }
+            });
+        }
+        else {
+            res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+        }
+    });
+}
+exports.userAuthentication = userAuthentication;
