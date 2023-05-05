@@ -1,11 +1,11 @@
 import { ObjectId, Schema, model } from "mongoose";
 interface Banner {
   name: string;
-  image?: {  };
+  image?: {};
   details: string;
   link: string;
-  categoryId? : string;
-
+  categoryId?: ObjectId;
+  position?: string;
 }
 const BannerSchema = new Schema<Banner>({
   name: { type: String },
@@ -16,7 +16,7 @@ const BannerSchema = new Schema<Banner>({
   },
   details: { type: String },
   link: { type: String },
-  categoryId: { type: String, ref: "category.categoryId" },
-
+  categoryId: { type: Schema.Types.ObjectId, ref: "category.categoryId" },
+  position: { type: String },
 });
 export const Banner = model("Banner", BannerSchema);
