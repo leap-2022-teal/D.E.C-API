@@ -5,11 +5,13 @@ const mongoose_1 = require("mongoose");
 const productsScema = new mongoose_1.Schema({
     name: { type: String },
     color: { type: String },
-    image: {
-        path: { type: String, default: "" },
-        width: { type: Number, default: 0 },
-        height: { type: Number, default: 0 },
-    },
+    image: [
+        {
+            path: { type: String, default: "" },
+            width: { type: Number, default: 0 },
+            height: { type: Number, default: 0 },
+        },
+    ],
     sizes: [{ size: Number, stock: Number }, { nullable: true }],
     details: { type: String },
     brand: { type: String, nullable: true },
