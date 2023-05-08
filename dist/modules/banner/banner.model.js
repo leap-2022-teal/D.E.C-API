@@ -11,5 +11,6 @@ const BannerSchema = new mongoose_1.Schema({
     },
     details: { type: String },
     link: { type: String },
+    categoryId: { type: String, ref: "category.categoryId" },
 });
 exports.Banner = (0, mongoose_1.model)("Banner", BannerSchema);
