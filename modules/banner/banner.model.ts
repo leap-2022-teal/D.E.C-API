@@ -4,7 +4,7 @@ interface Banner {
   image?: {};
   details: string;
   link: string;
-  categoryId?: ObjectId;
+  categoryId?: string;
   position?: string;
 }
 const BannerSchema = new Schema<Banner>({
@@ -16,7 +16,7 @@ const BannerSchema = new Schema<Banner>({
   },
   details: { type: String },
   link: { type: String },
-  categoryId: { type: Schema.Types.ObjectId, ref: "category.categoryId" },
+  categoryId: { type: String, ref: "category.categoryId", default: "" },
   position: { type: String },
 });
 export const Banner = model("Banner", BannerSchema);

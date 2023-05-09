@@ -30,7 +30,7 @@ function getProduct(req, res) {
 exports.getProduct = getProduct;
 function getProductById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const id = req.params;
+        const { id } = req.params;
         const one = yield product_model_1.products.findById({ _id: id });
         res.json(one);
     });

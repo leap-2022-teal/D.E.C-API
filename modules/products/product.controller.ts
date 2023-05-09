@@ -17,7 +17,7 @@ export async function getProduct(req: Request, res: Response) {
   }
 }
 export async function getProductById(req: Request, res: Response) {
-  const id = req.params;
+  const { id } = req.params;
   const one = await products.findById({ _id: id });
   res.json(one);
 }

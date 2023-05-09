@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userAuthentication = exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const list = yield users_model_1.users.find({}, null);
@@ -74,19 +75,18 @@ function userAuthentication(req, res) {
         const { email, password } = req.body;
         const one = yield users_model_1.users.findOne({ email });
         if (one) {
-            bcrypt_1.default.compare(password, one.password, function (err, result) {
-                if (result) {
-                    // const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
-                    res.status(200).json({ one });
-                }
-                else {
-                    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-                }
-            });
+            // bcrypt.compare(password, one.password, function (err: any, result: any) {
+            //   if (result) {
+            const token = jsonwebtoken_1.default.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
+            res.status(200).json({ one });
         }
         else {
             res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
         }
+        //     });
+        //   } else {
+        //     res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+        //   }
     });
 }
 exports.userAuthentication = userAuthentication;
