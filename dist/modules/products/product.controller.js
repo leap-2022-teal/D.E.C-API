@@ -8,22 +8,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProductById = exports.deleteProductById = exports.createNewProduct = exports.getProductById = exports.getProduct = void 0;
 const product_model_1 = require("./product.model");
+const mongoose_1 = __importDefault(require("mongoose"));
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { searchQuery } = req.query;
-        const { categoryId } = req.query;
+        const { searchQuery, categoryId } = req.query;
         const qregex = new RegExp(`${searchQuery}`, "i");
+        console.log(categoryId);
         const limit = parseInt(req.query.limit);
-        // console.log(req);
         if (categoryId) {
-            const list = yield product_model_1.products.find({ $and: [{ name: qregex }, { categoryId: categoryId }] }, "", { sort: { name: 1 } }).limit(limit);
-            res.json(list);
+            if (mongoose_1.default.Types.ObjectId.isValid(categoryId.toString())) {
+                const list = yield product_model_1.products.find({ $and: [{ name: qregex }, { $or: [{ subCategoryId: categoryId }, { categoryId: categoryId }] }] }, "", { sort: { name: 1 } }).limit(limit);
+                res.json(list);
+            }
+            else {
+                res.status(400).json({ error: "Invalid categoryId" });
+            }
         }
         else {
-            const list = yield product_model_1.products.find({ name: qregex }, "", { sort: { name: 1 } }).limit(limit);
+            const list = yield product_model_1.products.find({ $or: [{ name: qregex }, { categoryId: null }] }, "", { sort: { name: 1 } }).limit(limit);
             res.json(list);
         }
     });

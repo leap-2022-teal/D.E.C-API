@@ -40,7 +40,7 @@ function getCategory(req, res) {
 exports.getCategory = getCategory;
 function getCategoryById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const id = req.params;
+        const { id } = req.params;
         const one = yield category_model_1.category.findById({ _id: id });
         res.json(one);
     });
