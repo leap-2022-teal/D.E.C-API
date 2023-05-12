@@ -6,7 +6,6 @@ export async function getCategory(req: Request, res: Response) {
   const { q } = req.query;
   const parentId = req.query.parentId as string | undefined;
   const qregex = new RegExp(`${q}`, "i");
-
   if (parentId) {
     try {
       const objParentId = new mongoose.Types.ObjectId(parentId);
@@ -23,7 +22,7 @@ export async function getCategory(req: Request, res: Response) {
 }
 
 export async function getCategoryById(req: Request, res: Response) {
-  const id = req.params;
+  const { id } = req.params;
   const one = await category.findById({ _id: id });
   res.json(one);
 }
