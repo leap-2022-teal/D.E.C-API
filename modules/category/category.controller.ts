@@ -17,6 +17,7 @@ export async function getCategory(req: Request, res: Response) {
     }
   } else {
     const list = await category.find({ name: qregex }, "", { sort: { name: 1 } });
+
     res.json(list);
   }
 }

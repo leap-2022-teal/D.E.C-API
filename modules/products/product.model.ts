@@ -37,7 +37,7 @@ const productsScema = new Schema<Products>({
   brand: { type: String, nullable: true },
   price: { type: Number },
 
-  categoryId: { type: Schema.Types.ObjectId, ref: "category.categoryId" },
-  subCategoryId: { type: Schema.Types.ObjectId, ref: "category.categoryId" },
+  categoryId: { type: Schema.Types.ObjectId, ref: "Category" },
+  subCategoryId: { type: Schema.Types.ObjectId, ref: "Category" },
 });
 export const products = model("Products", productsScema);

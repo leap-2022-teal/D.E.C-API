@@ -16,7 +16,7 @@ const productsScema = new mongoose_1.Schema({
     details: { type: String },
     brand: { type: String, nullable: true },
     price: { type: Number },
-    categoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "category.categoryId" },
-    subCategoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "category.categoryId" },
+    categoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category" },
+    subCategoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category" },
 });
 exports.products = (0, mongoose_1.model)("Products", productsScema);

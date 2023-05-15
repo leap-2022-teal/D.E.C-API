@@ -3,6 +3,7 @@ import { products } from "./product.model";
 import mongoose from "mongoose";
 
 export async function getProduct(req: Request, res: Response) {
+  // console.log(req.query)
   const { searchQuery, categoryId } = req.query;
   const qregex = new RegExp(`${searchQuery}`, "i");
   console.log(categoryId);
@@ -42,4 +43,26 @@ export async function updateProductById(req: Request, res: Response) {
   const updatedFields = req.body;
   await products.findByIdAndUpdate({ _id: id }, updatedFields);
   res.json({ updatedId: id });
+}
+
+
+ export async function getFilteredProducts(req: Request, res: Response) {
+  const {gender} = req.query
+  const {color} = req.query
+
+    const list = await products.aggregate([
+      {$lookup:
+        {
+          from: "categories",
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "category"
+        }},{
+          $match:{
+            "category.name":gender
+          }
+        }
+   ]);
+    res.json(list);
+  // }
 }
