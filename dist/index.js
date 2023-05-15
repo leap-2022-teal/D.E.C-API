@@ -23,6 +23,7 @@ const uuid_1 = require("uuid");
 const cloudinary_1 = require("cloudinary");
 const banner_routes_1 = require("./modules/banner/banner.routes");
 const product_routes_1 = require("./modules/products/product.routes");
+const order_routes_1 = require("./modules/orders/order.routes");
 dotenv_1.default.config();
 mongoose_1.default.connect(`${process.env.MONGODB_STRING}`).then(() => console.log("MongoDB Connected ✅"));
 cloudinary_1.v2.config({
@@ -66,6 +67,7 @@ app.use("/categories", category_routes_1.categoriesRouter);
 app.use("/products", product_routes_1.productRouter);
 app.use("/users", users_routes_1.usersRouter);
 app.use("/banner", banner_routes_1.bannerRouter);
+app.use("/orders", order_routes_1.orderRouter);
 app.listen(port, () => {
     console.log(`Server started at ${port} 🎉`);
 });
