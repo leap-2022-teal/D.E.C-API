@@ -11,9 +11,9 @@ export async function getOrderById(req: Request, res: Response) {
   res.json(one);
 }
 export async function createNewOrder(req: Request, res: Response) {
-  const newBanner = req.body;
-  console.log(newBanner);
-  await Order.create(newBanner);
+  const newOrders = req.body;
+  console.log(newOrders);
+  await Order.create(newOrders);
   res.sendStatus(200);
 }
 export async function deleteOrderById(req: Request, res: Response) {
