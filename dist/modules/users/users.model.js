@@ -7,5 +7,7 @@ const usersSchema = new mongoose_1.Schema({
     email: { type: String },
     password: { type: String },
     role: { type: String },
+    location: { type: String },
+    phoneNumber: { type: Number },
 });
 exports.users = (0, mongoose_1.model)("Users", usersSchema);

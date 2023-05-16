@@ -20,7 +20,6 @@ function getCategory(req, res) {
         const { q } = req.query;
         const parentId = req.query.parentId;
         const qregex = new RegExp(`${q}`, "i");
-        console.log(req.query);
         if (parentId) {
             try {
                 const objParentId = new mongoose_1.default.Types.ObjectId(parentId);
@@ -34,7 +33,6 @@ function getCategory(req, res) {
         }
         else {
             const list = yield category_model_1.category.find({ name: qregex }, "", { sort: { name: 1 } });
-            console.log(list);
             res.json(list);
         }
     });

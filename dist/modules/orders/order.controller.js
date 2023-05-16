@@ -28,9 +28,9 @@ function getOrderById(req, res) {
 exports.getOrderById = getOrderById;
 function createNewOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const newBanner = req.body;
-        console.log(newBanner);
-        yield order_model_1.Order.create(newBanner);
+        const newOrders = req.body;
+        console.log(newOrders);
+        yield order_model_1.Order.create(newOrders);
         res.sendStatus(200);
     });
 }
