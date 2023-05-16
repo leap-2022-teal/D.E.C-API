@@ -46,15 +46,15 @@ export async function userAuthentication(req: Request, res: Response) {
   const { email, password } = req.body;
   const one: any = await users.findOne({ email });
   if (one) {
-    bcrypt.compare(password, one.password, function (err: any, result: any) {
-      if (result) {
-        // const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
+    // bcrypt.compare(password, one.password, function (err: any, result: any) {
+    //   if (result) {
+        const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
         res.status(200).json({ one });
       } else {
         res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
       }
-    });
-  } else {
-    res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-  }
+//     });
+//   } else {
+//     res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+//   }
 }

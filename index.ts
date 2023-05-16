@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
 import { bannerRouter } from "./modules/banner/banner.routes";
 import { productRouter } from "./modules/products/product.routes";
+import { orderRouter } from "./modules/orders/order.routes";
 dotenv.config();
 
 mongoose.connect(`${process.env.MONGODB_STRING}`).then(() => console.log("MongoDB Connected ✅"));
@@ -56,6 +57,7 @@ app.use("/categories", categoriesRouter);
 app.use("/products", productRouter);
 app.use("/users", usersRouter);
 app.use("/banner", bannerRouter);
+app.use("/orders", orderRouter);
 app.listen(port, () => {
   console.log(`Server started at ${port} 🎉`);
 });
