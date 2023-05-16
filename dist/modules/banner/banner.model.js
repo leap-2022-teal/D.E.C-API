@@ -11,6 +11,7 @@ const BannerSchema = new mongoose_1.Schema({
     },
     details: { type: String },
     link: { type: String },
+
     categoryId: { type: String, ref: "category.categoryId", default: "" },
     position: { type: String },
 });
