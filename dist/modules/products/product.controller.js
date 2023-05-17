@@ -8,33 +8,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFilteredProducts = exports.updateProductById = exports.deleteProductById = exports.createNewProduct = exports.getProductById = exports.getProduct = void 0;
 const product_model_1 = require("./product.model");
-const mongoose_1 = __importDefault(require("mongoose"));
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        // console.log(req.query)
-        const { searchQuery, categoryId } = req.query;
-        const qregex = new RegExp(`${searchQuery}`, "i");
-        console.log(categoryId);
-        const limit = parseInt(req.query.limit);
-        if (categoryId) {
-            if (mongoose_1.default.Types.ObjectId.isValid(categoryId.toString())) {
-                const list = yield product_model_1.products.find({ $and: [{ name: qregex }, { $or: [{ subCategoryId: categoryId }, { categoryId: categoryId }] }] }, "", { sort: { name: 1 } }).limit(limit);
-                res.json(list);
-            }
-            else {
-                res.status(400).json({ error: "Invalid categoryId" });
-            }
+        console.log(req.query);
+        const { searchQuery, categoryId, categoryIds, size, color } = req.query;
+        const filter = {};
+        if (color === null || color === void 0 ? void 0 : color.length) {
+            filter.color = { $in: color };
         }
-        else {
-            const list = yield product_model_1.products.find({ $or: [{ name: qregex }, { categoryId: null }] }, "", { sort: { name: 1 } }).limit(limit);
-            res.json(list);
+        if (categoryIds === null || categoryIds === void 0 ? void 0 : categoryIds.length) {
+            filter.categoryId = { $in: categoryIds };
         }
+        if (size === null || size === void 0 ? void 0 : size.length) {
+            filter["sizes.size"] = { $in: size };
+        }
+        if (searchQuery === null || searchQuery === void 0 ? void 0 : searchQuery.length) {
+            const qregex = new RegExp(`${searchQuery}`, "i");
+            filter["name"] = qregex;
+        }
+        // if (categoryId && typeof categoryId === "string") {
+        //   const id = ObjectId(categoryId);
+        //   console.log(id);
+        //   filter["subCategoryId"] = id;
+        //   filter["categoryId"] = id;
+        // }
+        const list = yield product_model_1.products.find(filter);
+        console.log(list);
+        res.json(list);
+        // const qregex = new RegExp(`${searchQuery}`, "i");
+        // console.log(categoryId);
+        // const limit = parseInt(req.query.limit as string);
+        // if (categoryId) {
+        //   if (mongoose.Types.ObjectId.isValid(categoryId.toString())) {
+        //     const list = await products.find({ $and: [{ name: qregex }, { $or: [{ subCategoryId: categoryId }, { categoryId: categoryId }] }] }, "", { sort: { name: 1 } }).limit(limit);
+        //     res.json(list);
+        //   } else {
+        //     res.status(400).json({ error: "Invalid categoryId" });
+        //   }
+        // } else {
+        //   const list = await products.find({ $or: [{ name: qregex }, { categoryId: null }] }, "", { sort: { name: 1 } }).limit(limit);
+        //   res.json(list);
+        // }
     });
 }
 exports.getProduct = getProduct;
@@ -75,22 +92,20 @@ function updateProductById(req, res) {
 exports.updateProductById = updateProductById;
 function getFilteredProducts(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { gender } = req.query;
-        const { color } = req.query;
-        const list = yield product_model_1.products.aggregate([
-            { $lookup: {
-                    from: "categories",
-                    localField: "categoryId",
-                    foreignField: "_id",
-                    as: "category"
-                } }, {
-                $match: {
-                    "category.name": gender
-                }
-            }
-        ]);
+        let { categoryIds, size, color } = req.body;
+        console.log({ categoryIds, size, color });
+        const filter = {};
+        if (color.length) {
+            filter.color = { $in: color };
+        }
+        if (categoryIds.length) {
+            filter.categoryId = { $in: categoryIds };
+        }
+        if (size.length) {
+            filter["sizes.size"] = { $in: size };
+        }
+        const list = yield product_model_1.products.find(filter);
         res.json(list);
-        // }
     });
 }
 exports.getFilteredProducts = getFilteredProducts;
