@@ -20,7 +20,7 @@ function getOrder(req, res) {
 exports.getOrder = getOrder;
 function getOrderById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const id = req.params;
+        const { id } = req.params;
         const one = yield order_model_1.Order.findById({ _id: id });
         res.json(one);
     });
@@ -31,6 +31,7 @@ function createNewOrder(req, res) {
         const newOrders = req.body;
         console.log(newOrders);
         yield order_model_1.Order.create(newOrders);
+        res.json(newOrders._id);
         res.sendStatus(200);
     });
 }
@@ -46,10 +47,17 @@ exports.deleteOrderById = deleteOrderById;
 function updateOrderById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
-        const updatedFields = req.body;
-        yield order_model_1.Order.findByIdAndUpdate({ _id: id }, updatedFields);
-        res.json({ updatedId: id });
-        console.log(updatedFields);
+        const newProduct = req.body;
+        const one = yield order_model_1.Order.findById({ _id: id });
+        if (one) {
+            one === null || one === void 0 ? void 0 : one.products.push(newProduct);
+            yield order_model_1.Order.findByIdAndUpdate({ _id: id }, one);
+            res.json({ updatedId: id });
+        }
+        else {
+            res.json({ message: "not found" });
+        }
+        // console.log(updatedFields);
     });
 }
 exports.updateOrderById = updateOrderById;
