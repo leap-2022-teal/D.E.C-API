@@ -4,7 +4,6 @@ exports.productRouter = void 0;
 const express_1 = require("express");
 const product_controller_1 = require("./product.controller");
 const router = (0, express_1.Router)();
-// router.post("/filter/",getFilteredProducts)
 router.get("/", product_controller_1.getProduct);
 router.get("/:id", product_controller_1.getProductById);
 router.post("/", product_controller_1.createNewProduct);

@@ -9,12 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFilteredProducts = exports.updateProductById = exports.deleteProductById = exports.createNewProduct = exports.getProductById = exports.getProduct = void 0;
+exports.updateProductById = exports.deleteProductById = exports.createNewProduct = exports.getProductById = exports.getProduct = void 0;
 const product_model_1 = require("./product.model");
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(req.query);
-        const { searchQuery, categoryId, categoryIds, size, color } = req.query;
+        const { searchQuery, categoryId, categoryIds, size, color, price } = req.query;
         const filter = {};
         if (color === null || color === void 0 ? void 0 : color.length) {
             filter.color = { $in: color };
@@ -25,33 +24,19 @@ function getProduct(req, res) {
         if (size === null || size === void 0 ? void 0 : size.length) {
             filter["sizes.size"] = { $in: size };
         }
+        // if (price.length > 1) {
+        //   filter.price = { $and: [{ price: { $gte:  } }, { price: { $lte: 2 } }] };
+        // }
         if (searchQuery === null || searchQuery === void 0 ? void 0 : searchQuery.length) {
             const qregex = new RegExp(`${searchQuery}`, "i");
             filter["name"] = qregex;
         }
-        // if (categoryId && typeof categoryId === "string") {
-        //   const id = ObjectId(categoryId);
-        //   console.log(id);
-        //   filter["subCategoryId"] = id;
-        //   filter["categoryId"] = id;
-        // }
+        if (categoryId && typeof categoryId === "string") {
+            const id = categoryId;
+            filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
+        }
         const list = yield product_model_1.products.find(filter);
-        console.log(list);
         res.json(list);
-        // const qregex = new RegExp(`${searchQuery}`, "i");
-        // console.log(categoryId);
-        // const limit = parseInt(req.query.limit as string);
-        // if (categoryId) {
-        //   if (mongoose.Types.ObjectId.isValid(categoryId.toString())) {
-        //     const list = await products.find({ $and: [{ name: qregex }, { $or: [{ subCategoryId: categoryId }, { categoryId: categoryId }] }] }, "", { sort: { name: 1 } }).limit(limit);
-        //     res.json(list);
-        //   } else {
-        //     res.status(400).json({ error: "Invalid categoryId" });
-        //   }
-        // } else {
-        //   const list = await products.find({ $or: [{ name: qregex }, { categoryId: null }] }, "", { sort: { name: 1 } }).limit(limit);
-        //   res.json(list);
-        // }
     });
 }
 exports.getProduct = getProduct;
@@ -90,22 +75,3 @@ function updateProductById(req, res) {
     });
 }
 exports.updateProductById = updateProductById;
-function getFilteredProducts(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let { categoryIds, size, color } = req.body;
-        console.log({ categoryIds, size, color });
-        const filter = {};
-        if (color.length) {
-            filter.color = { $in: color };
-        }
-        if (categoryIds.length) {
-            filter.categoryId = { $in: categoryIds };
-        }
-        if (size.length) {
-            filter["sizes.size"] = { $in: size };
-        }
-        const list = yield product_model_1.products.find(filter);
-        res.json(list);
-    });
-}
-exports.getFilteredProducts = getFilteredProducts;
