@@ -19,10 +19,6 @@ export async function getProduct(req: Request, res: Response) {
     filter["sizes.size"] = { $in: size };
   }
 
-  // if (price.length > 1) {
-  //   filter.price = { $and: [{ price: { $gte:  } }, { price: { $lte: 2 } }] };
-  // }
-
   if (searchQuery?.length) {
     const qregex = new RegExp(`${searchQuery}`, "i");
     filter["name"] = qregex;
@@ -32,7 +28,26 @@ export async function getProduct(req: Request, res: Response) {
     const id = categoryId;
     filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
   }
-  const list = await products.find(filter);
+
+  // if (price?.length) {
+  //   const priceRanges = price.split(",");
+  //   const priceConditions = priceRanges.map((priceRange: string) => {
+  //     if(priceRange === "Over 150"){
+  //       return{price: {$gte: 150}}
+  //     } else {
+  //       const [minPrice, maxPrice] =priceRange.split(" - ")
+  //       return{
+  //         price {
+  //           $gte: parseInt(minPrice.substring(1), 10)
+  //           $lte: parseInt(maxPrice.substring(1), 10)
+  //         }
+  //       };
+  //     }
+  //   });
+  //   filter{"or"} = priceConditions
+  // }
+
+  const list = await products.find(filter).maxTimeMS(20000);
   res.json(list);
 }
 
