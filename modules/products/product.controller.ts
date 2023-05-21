@@ -3,7 +3,14 @@ import { products } from "./product.model";
 import { ObjectId } from "mongoose";
 
 export async function getProduct(req: Request, res: Response) {
-  const { searchQuery, categoryId, categoryIds, size, color, price } = req.query;
+  const { searchQuery, categoryId, categoryIds, size, color, price } = req.query as {
+    searchQuery?: string;
+    categoryId?: string;
+    categoryIds?: string[];
+    size?: string[];
+    color?: string[];
+    price?: string | string[];
+  };
 
   const filter: any = {};
 
@@ -29,26 +36,31 @@ export async function getProduct(req: Request, res: Response) {
     filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
   }
 
-  // if (price?.length) {
-  //   const priceRanges = price.split(",");
-  //   const priceConditions = priceRanges.map((priceRange: string) => {
-  //     if(priceRange === "Over 150"){
-  //       return{price: {$gte: 150}}
-  //     } else {
-  //       const [minPrice, maxPrice] =priceRange.split(" - ")
-  //       return{
-  //         price {
-  //           $gte: parseInt(minPrice.substring(1), 10)
-  //           $lte: parseInt(maxPrice.substring(1), 10)
-  //         }
-  //       };
-  //     }
-  //   });
-  //   filter{"or"} = priceConditions
-  // }
+  if (price?.length) {
+    const priceConditions = Array.isArray(price) ? price.map(parsePriceRange) : [parsePriceRange(price)];
+    filter.$or = priceConditions;
+  }
 
   const list = await products.find(filter).maxTimeMS(20000);
   res.json(list);
+}
+
+function parsePriceRange(priceRange: string): { price: { $gte: number; $lte?: number } } {
+  const [minPrice, maxPrice] = priceRange.split(" - ");
+  const parsedMinPrice = parseInt(minPrice.substring(1), 10);
+  const parsedMaxPrice = maxPrice && maxPrice === "Over $150" ? Infinity : parseInt(maxPrice?.substring(1), 10);
+
+  const priceCondition: { price: { $gte: number; $lte?: number } } = {
+    price: {
+      $gte: isNaN(parsedMinPrice) ? 0 : parsedMinPrice,
+    },
+  };
+
+  if (!isNaN(parsedMaxPrice)) {
+    priceCondition.price.$lte = parsedMaxPrice;
+  }
+
+  return priceCondition;
 }
 
 export async function getProductById(req: Request, res: Response) {

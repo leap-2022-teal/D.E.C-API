@@ -32,28 +32,29 @@ function getProduct(req, res) {
             const id = categoryId;
             filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
         }
-        // if (price?.length) {
-        //   const priceRanges = price.split(",");
-        //   const priceConditions = priceRanges.map((priceRange: string) => {
-        //     if(priceRange === "Over 150"){
-        //       return{price: {$gte: 150}}
-        //     } else {
-        //       const [minPrice, maxPrice] =priceRange.split(" - ")
-        //       return{
-        //         price {
-        //           $gte: parseInt(minPrice.substring(1), 10)
-        //           $lte: parseInt(maxPrice.substring(1), 10)
-        //         }
-        //       };
-        //     }
-        //   });
-        //   filter{"or"} = priceConditions
-        // }
+        if (price === null || price === void 0 ? void 0 : price.length) {
+            const priceConditions = Array.isArray(price) ? price.map(parsePriceRange) : [parsePriceRange(price)];
+            filter.$or = priceConditions;
+        }
         const list = yield product_model_1.products.find(filter).maxTimeMS(20000);
         res.json(list);
     });
 }
 exports.getProduct = getProduct;
+function parsePriceRange(priceRange) {
+    const [minPrice, maxPrice] = priceRange.split(" - ");
+    const parsedMinPrice = parseInt(minPrice.substring(1), 10);
+    const parsedMaxPrice = maxPrice && maxPrice === "Over $150" ? Infinity : parseInt(maxPrice === null || maxPrice === void 0 ? void 0 : maxPrice.substring(1), 10);
+    const priceCondition = {
+        price: {
+            $gte: isNaN(parsedMinPrice) ? 0 : parsedMinPrice,
+        },
+    };
+    if (!isNaN(parsedMaxPrice)) {
+        priceCondition.price.$lte = parsedMaxPrice;
+    }
+    return priceCondition;
+}
 function getProductById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
