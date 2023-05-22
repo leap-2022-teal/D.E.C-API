@@ -14,6 +14,7 @@ const product_model_1 = require("./product.model");
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { searchQuery, categoryId, categoryIds, size, color, price } = req.query;
+        console.log(req.query);
         const filter = {};
         if (color === null || color === void 0 ? void 0 : color.length) {
             filter.color = { $in: color };
@@ -28,14 +29,21 @@ function getProduct(req, res) {
             const qregex = new RegExp(`${searchQuery}`, "i");
             filter["name"] = qregex;
         }
-        if (categoryId && typeof categoryId === "string") {
+        if (categoryId === null || categoryId === void 0 ? void 0 : categoryId.length) {
             const id = categoryId;
             filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
         }
         if (price === null || price === void 0 ? void 0 : price.length) {
             const priceConditions = Array.isArray(price) ? price.map(parsePriceRange) : [parsePriceRange(price)];
-            filter.$or = priceConditions;
+            if (filter["$or"]) {
+                const existingCondition = filter["$or"];
+                filter["$and"] = [{ $or: existingCondition }, ...priceConditions];
+            }
+            else {
+                filter["$or"] = priceConditions;
+            }
         }
+        console.log(filter);
         const list = yield product_model_1.products.find(filter).maxTimeMS(20000);
         res.json(list);
     });
@@ -43,8 +51,8 @@ function getProduct(req, res) {
 exports.getProduct = getProduct;
 function parsePriceRange(priceRange) {
     const [minPrice, maxPrice] = priceRange.split(" - ");
-    const parsedMinPrice = parseInt(minPrice.substring(1), 10);
-    const parsedMaxPrice = maxPrice && maxPrice === "Over $150" ? Infinity : parseInt(maxPrice === null || maxPrice === void 0 ? void 0 : maxPrice.substring(1), 10);
+    const parsedMinPrice = priceRange && priceRange === "Over $150" ? parseInt(minPrice.split(" ")[1].substring(1), 10) : parseInt(minPrice.substring(1), 10);
+    const parsedMaxPrice = priceRange && priceRange === "Over $150" ? Infinity : parseInt(maxPrice === null || maxPrice === void 0 ? void 0 : maxPrice.substring(1), 10);
     const priceCondition = {
         price: {
             $gte: isNaN(parsedMinPrice) ? 0 : parsedMinPrice,
@@ -66,8 +74,6 @@ exports.getProductById = getProductById;
 function createNewProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newProduct = req.body;
-        console.log(req.body);
-        console.log(newProduct);
         yield product_model_1.products.create(newProduct.data);
         res.sendStatus(200);
     });

@@ -11,7 +11,7 @@ export async function getProduct(req: Request, res: Response) {
     color?: string[];
     price?: string | string[];
   };
-
+  console.log(req.query);
   const filter: any = {};
 
   if (color?.length) {
@@ -31,15 +31,21 @@ export async function getProduct(req: Request, res: Response) {
     filter["name"] = qregex;
   }
 
-  if (categoryId && typeof categoryId === "string") {
+  if (categoryId?.length) {
     const id = categoryId;
     filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
   }
-
   if (price?.length) {
     const priceConditions = Array.isArray(price) ? price.map(parsePriceRange) : [parsePriceRange(price)];
-    filter.$or = priceConditions;
+
+    if (filter["$or"]) {
+      const existingCondition = filter["$or"];
+      filter["$and"] = [{ $or: existingCondition }, ...priceConditions];
+    } else {
+      filter["$or"] = priceConditions;
+    }
   }
+  console.log(filter);
 
   const list = await products.find(filter).maxTimeMS(20000);
   res.json(list);
@@ -47,9 +53,8 @@ export async function getProduct(req: Request, res: Response) {
 
 function parsePriceRange(priceRange: string): { price: { $gte: number; $lte?: number } } {
   const [minPrice, maxPrice] = priceRange.split(" - ");
-  const parsedMinPrice = parseInt(minPrice.substring(1), 10);
-  const parsedMaxPrice = maxPrice && maxPrice === "Over $150" ? Infinity : parseInt(maxPrice?.substring(1), 10);
-
+  const parsedMinPrice = priceRange && priceRange === "Over $150" ? parseInt(minPrice.split(" ")[1].substring(1), 10) : parseInt(minPrice.substring(1), 10);
+  const parsedMaxPrice = priceRange && priceRange === "Over $150" ? Infinity : parseInt(maxPrice?.substring(1), 10);
   const priceCondition: { price: { $gte: number; $lte?: number } } = {
     price: {
       $gte: isNaN(parsedMinPrice) ? 0 : parsedMinPrice,
@@ -59,7 +64,6 @@ function parsePriceRange(priceRange: string): { price: { $gte: number; $lte?: nu
   if (!isNaN(parsedMaxPrice)) {
     priceCondition.price.$lte = parsedMaxPrice;
   }
-
   return priceCondition;
 }
 
@@ -70,8 +74,6 @@ export async function getProductById(req: Request, res: Response) {
 }
 export async function createNewProduct(req: Request, res: Response) {
   const newProduct = req.body;
-  console.log(req.body);
-  console.log(newProduct);
   await products.create(newProduct.data);
   res.sendStatus(200);
 }
