@@ -31,8 +31,12 @@ function createNewOrder(req, res) {
         const newOrders = req.body;
         console.log(newOrders);
         yield order_model_1.Order.create(newOrders);
-        res.json(newOrders._id);
-        res.sendStatus(200);
+        try {
+            res.json(newOrders._id);
+        }
+        catch (_a) {
+            res.sendStatus(500);
+        }
     });
 }
 exports.createNewOrder = createNewOrder;

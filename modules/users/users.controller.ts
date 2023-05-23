@@ -12,18 +12,17 @@ export async function getUsersById(req: Request, res: Response) {
   const one = await users.findById({ _id: id });
   res.json(one);
 }
-export async function createNewUsers(req: Request, res: Response) {
-  const newUsers = req.body 
-  console.log(req , "this req")
-  console.log(newUsers , "new user")
-  try {
-    const createdUser = await users.create(newUsers);
-    res.status(200).json(createdUser._id);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to create user" });
-  }
-
-}
+// export async function createNewUsers(req: Request, res: Response) {
+//   const newUsers = req.body;
+//   console.log(req, "this req");
+//   console.log(newUsers, "new user");
+//   try {
+//     const createdUser = await users.create(newUsers);
+//     res.status(200).json(createdUser._id);
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to create user" });
+//   }
+// }
 
 export async function deleteUsersById(req: Request, res: Response) {
   const { id } = req.params;
@@ -37,21 +36,35 @@ export async function updateUsersById(req: Request, res: Response) {
   res.json({ updatedId: id });
 }
 
-//  login autherzation admin
+export async function userRegistration(req: Request, res: Response) {
+  const newUser = req.body;
+  const myPlaintextPassword = newUser.password;
+  bcrypt.hash(myPlaintextPassword, 10, async function (err: any, hash: any) {
+    newUser.password = hash;
+    try {
+      await users.create(newUser);
+      res.sendStatus(newUser._id);
+    } catch (error) {
+      res.status(400).json({ error });
+    }
+  });
+}
 
-export async function userAuthentication(req: Request, res: Response) {
+export async function authenticateUser(req: Request, res: Response) {
   const { email, password } = req.body;
-  const one: any = await users.findOne({ email });
-  if (one) {
-    // bcrypt.compare(password, one.password, function (err: any, result: any) {
-    //   if (result) {
-        const token = jwt.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
-        res.status(200).json({ one });
-      } else {
-        res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-      }
-//     });
-//   } else {
-//     res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-//   }
+  const one = await users.findOne({ email });
+
+  if (!one) {
+    return res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });
+  }
+
+  const verified = bcrypt.compare(password, one.password);
+
+  if (!verified) {
+    res.status(401).json({ message: "Нууц үг буруу байна" });
+  }
+
+  const accessToken = jwt.sign({ id: one._id, role: one.role }, `${process.env.SECRET_KEY}`, { expiresIn: 86400 });
+
+  res.status(200).json({ accessToken });
 }

@@ -3,6 +3,7 @@ import { products } from "./product.model";
 import { ObjectId } from "mongoose";
 
 export async function getProduct(req: Request, res: Response) {
+  const { limit } = req.query;
   const { searchQuery, categoryId, categoryIds, size, color, price } = req.query as {
     searchQuery?: string;
     categoryId?: string;
@@ -47,7 +48,7 @@ export async function getProduct(req: Request, res: Response) {
   }
   console.log(filter);
 
-  const list = await products.find(filter).maxTimeMS(20000);
+  const list = await products.find(filter).maxTimeMS(20000).limit(Number(limit));
   res.json(list);
 }
 

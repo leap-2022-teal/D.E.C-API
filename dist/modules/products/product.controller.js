@@ -13,6 +13,7 @@ exports.updateProductById = exports.deleteProductById = exports.createNewProduct
 const product_model_1 = require("./product.model");
 function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        const { limit } = req.query;
         const { searchQuery, categoryId, categoryIds, size, color, price } = req.query;
         console.log(req.query);
         const filter = {};
@@ -44,7 +45,7 @@ function getProduct(req, res) {
             }
         }
         console.log(filter);
-        const list = yield product_model_1.products.find(filter).maxTimeMS(20000);
+        const list = yield product_model_1.products.find(filter).maxTimeMS(20000).limit(Number(limit));
         res.json(list);
     });
 }
