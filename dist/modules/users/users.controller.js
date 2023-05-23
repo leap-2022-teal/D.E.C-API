@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userAuthentication = exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -33,22 +32,16 @@ function getUsersById(req, res) {
 exports.getUsersById = getUsersById;
 function createNewUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { formData } = req.body;
-        const myPlaintextPassword = formData.password;
-        bcrypt_1.default.hash(myPlaintextPassword, 10, function (err, hash) {
-            return __awaiter(this, void 0, void 0, function* () {
-                formData.password = hash;
-                console.log(formData);
-                try {
-                    yield users_model_1.users.create(formData);
-                    res.sendStatus(200);
-                }
-                catch (error) {
-                    res.status(400).json({ error });
-                }
-            });
-        });
-        res.sendStatus(200);
+        const newUsers = req.body;
+        console.log(req, "this req");
+        console.log(newUsers, "new user");
+        try {
+            const createdUser = yield users_model_1.users.create(newUsers);
+            res.status(200).json(createdUser._id);
+        }
+        catch (error) {
+            res.status(500).json({ message: "Failed to create user" });
+        }
     });
 }
 exports.createNewUsers = createNewUsers;

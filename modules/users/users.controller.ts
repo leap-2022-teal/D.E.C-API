@@ -13,19 +13,16 @@ export async function getUsersById(req: Request, res: Response) {
   res.json(one);
 }
 export async function createNewUsers(req: Request, res: Response) {
-  const { formData } = req.body;
-  const myPlaintextPassword = formData.password;
-  bcrypt.hash(myPlaintextPassword, 10, async function (err: any, hash: any) {
-    formData.password = hash;
-    console.log(formData);
-    try {
-      await users.create(formData);
-      res.sendStatus(200);
-    } catch (error) {
-      res.status(400).json({ error });
-    }
-  });
-  res.sendStatus(200);
+  const newUsers = req.body 
+  console.log(req , "this req")
+  console.log(newUsers , "new user")
+  try {
+    const createdUser = await users.create(newUsers);
+    res.status(200).json(createdUser._id);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create user" });
+  }
+
 }
 
 export async function deleteUsersById(req: Request, res: Response) {
