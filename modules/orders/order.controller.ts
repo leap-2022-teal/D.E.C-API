@@ -14,8 +14,11 @@ export async function createNewOrder(req: Request, res: Response) {
   const newOrders = req.body;
   console.log(newOrders);
   await Order.create(newOrders);
-  res.json(newOrders._id);
-  res.sendStatus(200);
+  try {
+    res.json(newOrders._id);
+  } catch {
+    res.sendStatus(500);
+  }
 }
 export async function deleteOrderById(req: Request, res: Response) {
   const { id } = req.params;

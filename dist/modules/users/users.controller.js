@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userAuthentication = exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getUsers = void 0;
+exports.authenticateUser = exports.userRegistration = exports.updateUsersById = exports.deleteUsersById = exports.getUsersById = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30,21 +31,17 @@ function getUsersById(req, res) {
     });
 }
 exports.getUsersById = getUsersById;
-function createNewUsers(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const newUsers = req.body;
-        console.log(req, "this req");
-        console.log(newUsers, "new user");
-        try {
-            const createdUser = yield users_model_1.users.create(newUsers);
-            res.status(200).json(createdUser._id);
-        }
-        catch (error) {
-            res.status(500).json({ message: "Failed to create user" });
-        }
-    });
-}
-exports.createNewUsers = createNewUsers;
+// export async function createNewUsers(req: Request, res: Response) {
+//   const newUsers = req.body;
+//   console.log(req, "this req");
+//   console.log(newUsers, "new user");
+//   try {
+//     const createdUser = await users.create(newUsers);
+//     res.status(200).json(createdUser._id);
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to create user" });
+//   }
+// }
 function deleteUsersById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
@@ -62,24 +59,38 @@ function updateUsersById(req, res) {
     });
 }
 exports.updateUsersById = updateUsersById;
-//  login autherzation admin
-function userAuthentication(req, res) {
+function userRegistration(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const newUser = req.body;
+        const myPlaintextPassword = newUser.password;
+        bcrypt_1.default.hash(myPlaintextPassword, 10, function (err, hash) {
+            return __awaiter(this, void 0, void 0, function* () {
+                newUser.password = hash;
+                try {
+                    yield users_model_1.users.create(newUser);
+                    res.sendStatus(newUser._id);
+                }
+                catch (error) {
+                    res.status(400).json({ error });
+                }
+            });
+        });
+    });
+}
+exports.userRegistration = userRegistration;
+function authenticateUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { email, password } = req.body;
         const one = yield users_model_1.users.findOne({ email });
-        if (one) {
-            // bcrypt.compare(password, one.password, function (err: any, result: any) {
-            //   if (result) {
-            const token = jsonwebtoken_1.default.sign({ users_id: one._id, role: one.role }, `${process.env.JWT_SECRET}`);
-            res.status(200).json({ one });
+        if (!one) {
+            return res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });
         }
-        else {
-            res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
+        const verified = bcrypt_1.default.compare(password, one.password);
+        if (!verified) {
+            res.status(401).json({ message: "Нууц үг буруу байна" });
         }
-        //     });
-        //   } else {
-        //     res.status(400).json({ message: "Оруулсан мэдээлэл буруу байна" });
-        //   }
+        const accessToken = jsonwebtoken_1.default.sign({ id: one._id, role: one.role }, `${process.env.SECRET_KEY}`, { expiresIn: 86400 });
+        res.status(200).json({ accessToken });
     });
 }
-exports.userAuthentication = userAuthentication;
+exports.authenticateUser = authenticateUser;
