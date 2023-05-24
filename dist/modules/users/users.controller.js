@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUser = exports.userRegistration = exports.updateUsersById = exports.deleteUsersById = exports.getUsersById = exports.getUsers = void 0;
+exports.authenticateUser = exports.userRegistration = exports.updateUsersById = exports.deleteUsersById = exports.getUsersById = exports.getCurrentUser = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -23,6 +23,17 @@ function getUsers(req, res) {
     });
 }
 exports.getUsers = getUsers;
+function getCurrentUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { userId } = req;
+        if (!userId) {
+            return res.sendStatus(403);
+        }
+        const currentUser = yield users_model_1.users.findById(userId);
+        res.json(currentUser);
+    });
+}
+exports.getCurrentUser = getCurrentUser;
 function getUsersById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = req.params;
@@ -61,20 +72,27 @@ function updateUsersById(req, res) {
 exports.updateUsersById = updateUsersById;
 function userRegistration(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const newUser = req.body;
-        const myPlaintextPassword = newUser.password;
-        bcrypt_1.default.hash(myPlaintextPassword, 10, function (err, hash) {
-            return __awaiter(this, void 0, void 0, function* () {
-                newUser.password = hash;
-                try {
-                    yield users_model_1.users.create(newUser);
-                    res.sendStatus(newUser._id);
-                }
-                catch (error) {
-                    res.status(400).json({ error });
-                }
+        const { formData } = req.body;
+        console.log(formData, 'hi data');
+        const myPlaintextPassword = formData.password;
+        const oneList = yield users_model_1.users.findOne({ email: formData.email });
+        if (oneList) {
+            res.status(400).json({ message: "Something went wrong" });
+        }
+        else {
+            bcrypt_1.default.hash(myPlaintextPassword, 10, function (err, hash) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    formData.password = hash;
+                    try {
+                        yield users_model_1.users.create(formData);
+                        res.sendStatus(200);
+                    }
+                    catch (error) {
+                        res.status(400).json({ error });
+                    }
+                });
             });
-        });
+        }
     });
 }
 exports.userRegistration = userRegistration;

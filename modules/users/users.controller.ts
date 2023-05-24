@@ -7,6 +7,17 @@ export async function getUsers(req: Request, res: Response) {
   const list = await users.find({}, null);
   res.json(list);
 }
+
+export async function getCurrentUser(req: any, res: Response) {
+  const { userId } = req;
+  if (!userId) {
+    return res.sendStatus(403);
+  }
+
+  const currentUser = await users.findById(userId);
+
+  res.json(currentUser);
+}
 export async function getUsersById(req: Request, res: Response) {
   const id = req.params;
   const one = await users.findById({ _id: id });
@@ -37,17 +48,25 @@ export async function updateUsersById(req: Request, res: Response) {
 }
 
 export async function userRegistration(req: Request, res: Response) {
-  const newUser = req.body;
-  const myPlaintextPassword = newUser.password;
+  const {formData} = req.body;
+  console.log(formData, 'hi data')
+  const myPlaintextPassword = formData.password;
+  const oneList = await users.findOne({email: formData.email})
+
+  if(oneList){
+    res.status(400).json({ message: "Something went wrong" });
+  }else{
   bcrypt.hash(myPlaintextPassword, 10, async function (err: any, hash: any) {
-    newUser.password = hash;
-    try {
-      await users.create(newUser);
-      res.sendStatus(newUser._id);
-    } catch (error) {
-      res.status(400).json({ error });
-    }
+    formData.password = hash;
+      try {
+        await users.create(formData);
+        res.sendStatus(200);
+      } catch (error) {
+        res.status(400).json({ error });
+      }
   });
+  }
+
 }
 
 export async function authenticateUser(req: Request, res: Response) {
