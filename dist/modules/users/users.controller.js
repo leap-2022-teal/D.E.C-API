@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUser = exports.userRegistration = exports.updateUsersById = exports.deleteUsersById = exports.getUsersById = exports.getCurrentUser = exports.getUsers = void 0;
+exports.authenticateUser = exports.userRegistration = exports.updateUsersById = exports.deleteUsersById = exports.createNewUsers = exports.getUsersById = exports.getCurrentUser = exports.getUsers = void 0;
 const users_model_1 = require("./users.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -42,17 +42,24 @@ function getUsersById(req, res) {
     });
 }
 exports.getUsersById = getUsersById;
-// export async function createNewUsers(req: Request, res: Response) {
-//   const newUsers = req.body;
-//   console.log(req, "this req");
-//   console.log(newUsers, "new user");
-//   try {
-//     const createdUser = await users.create(newUsers);
-//     res.status(200).json(createdUser._id);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to create user" });
-//   }
-// }
+function createNewUsers(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const newUsers = req.body;
+        console.log(req, "this req");
+        console.log(newUsers, "new user");
+        if (newUsers.address) {
+            newUsers.isGuest = true;
+        }
+        try {
+            const createdUser = yield users_model_1.users.create(newUsers);
+            res.status(200).json(createdUser._id);
+        }
+        catch (error) {
+            res.status(500).json({ message: "Failed to create user" });
+        }
+    });
+}
+exports.createNewUsers = createNewUsers;
 function deleteUsersById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
@@ -73,9 +80,9 @@ exports.updateUsersById = updateUsersById;
 function userRegistration(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { formData } = req.body;
-        console.log(formData, 'hi data');
+        console.log(formData, "hi data");
         const myPlaintextPassword = formData.password;
-        const oneList = yield users_model_1.users.findOne({ email: formData.email });
+        const oneList = yield users_model_1.users.findOne({ $and: [{ email: formData.email }, { isGuest: false }] });
         if (oneList) {
             res.status(400).json({ message: "Something went wrong" });
         }

@@ -23,17 +23,20 @@ export async function getUsersById(req: Request, res: Response) {
   const one = await users.findById({ _id: id });
   res.json(one);
 }
-// export async function createNewUsers(req: Request, res: Response) {
-//   const newUsers = req.body;
-//   console.log(req, "this req");
-//   console.log(newUsers, "new user");
-//   try {
-//     const createdUser = await users.create(newUsers);
-//     res.status(200).json(createdUser._id);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to create user" });
-//   }
-// }
+export async function createNewUsers(req: Request, res: Response) {
+  const newUsers = req.body;
+  console.log(req, "this req");
+  console.log(newUsers, "new user");
+  if (newUsers.address) {
+    newUsers.isGuest = true;
+  }
+  try {
+    const createdUser = await users.create(newUsers);
+    res.status(200).json(createdUser._id);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create user" });
+  }
+}
 
 export async function deleteUsersById(req: Request, res: Response) {
   const { id } = req.params;
@@ -48,25 +51,24 @@ export async function updateUsersById(req: Request, res: Response) {
 }
 
 export async function userRegistration(req: Request, res: Response) {
-  const {formData} = req.body;
-  console.log(formData, 'hi data')
+  const { formData } = req.body;
+  console.log(formData, "hi data");
   const myPlaintextPassword = formData.password;
-  const oneList = await users.findOne({email: formData.email})
+  const oneList = await users.findOne({ $and: [{ email: formData.email }, { isGuest: false }] });
 
-  if(oneList){
+  if (oneList) {
     res.status(400).json({ message: "Something went wrong" });
-  }else{
-  bcrypt.hash(myPlaintextPassword, 10, async function (err: any, hash: any) {
-    formData.password = hash;
+  } else {
+    bcrypt.hash(myPlaintextPassword, 10, async function (err: any, hash: any) {
+      formData.password = hash;
       try {
         await users.create(formData);
         res.sendStatus(200);
       } catch (error) {
         res.status(400).json({ error });
       }
-  });
+    });
   }
-
 }
 
 export async function authenticateUser(req: Request, res: Response) {

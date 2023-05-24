@@ -9,6 +9,7 @@ const users_controller_1 = require("./users.controller");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = (0, express_1.Router)();
 router.get("/", users_controller_1.getUsers);
+router.post("/", users_controller_1.createNewUsers);
 router.get("/me", auth_1.default, users_controller_1.getCurrentUser);
 router.get("/:id", auth_1.default, users_controller_1.getUsersById);
 router.post("/register", users_controller_1.userRegistration);
