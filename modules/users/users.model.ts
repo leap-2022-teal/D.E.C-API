@@ -1,18 +1,16 @@
 import { Schema, model } from "mongoose";
 
 interface Users {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
-  state:string
+  state?:string
   role?: string;
-  location: string;
-  phoneNumber: number;
+  location?: string;
+  phoneNumber?: number;
 }
 const usersSchema = new Schema<Users>({
-  firstName: { type: String },
-  lastName:{type: String },
+  name:{type: String },
   email: { type: String },
   password: { type: String },
   state: {type:String},
