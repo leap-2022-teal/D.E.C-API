@@ -10,5 +10,6 @@ const usersSchema = new mongoose_1.Schema({
     role: { type: String },
     location: { type: String },
     phoneNumber: { type: Number },
+    isGuest: { type: Boolean, default: false },
 });
 exports.users = (0, mongoose_1.model)("Users", usersSchema);
