@@ -30,8 +30,7 @@ function getProduct(req, res) {
             filter["name"] = qregex;
         }
         if (categoryId === null || categoryId === void 0 ? void 0 : categoryId.length) {
-            const id = categoryId;
-            filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
+            filter["$or"] = [{ subCategoryId: { $in: categoryId } }, { categoryId: { $in: categoryId } }];
         }
         if (price === null || price === void 0 ? void 0 : price.length) {
             const priceConditions = Array.isArray(price) ? price.map(parsePriceRange) : [parsePriceRange(price)];

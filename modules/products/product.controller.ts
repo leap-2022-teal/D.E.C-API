@@ -32,9 +32,9 @@ export async function getProduct(req: Request, res: Response) {
   }
 
   if (categoryId?.length) {
-    const id = categoryId;
-    filter["$or"] = [{ subCategoryId: categoryId }, { categoryId: categoryId }];
+    filter["$or"] = [{ subCategoryId: { $in: categoryId } }, { categoryId: { $in: categoryId } }];
   }
+
   if (price?.length) {
     const priceConditions = Array.isArray(price) ? price.map(parsePriceRange) : [parsePriceRange(price)];
 
