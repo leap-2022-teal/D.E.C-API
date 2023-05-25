@@ -87,5 +87,5 @@ export async function authenticateUser(req: Request, res: Response) {
 
   const accessToken = jwt.sign({ id: one._id, role: one.role }, `${process.env.SECRET_KEY}`, { expiresIn: 86400 });
 
-  res.status(200).json({ accessToken });
+  res.status(200).json({ accessToken, one });
 }

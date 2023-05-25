@@ -115,7 +115,7 @@ function authenticateUser(req, res) {
             res.status(401).json({ message: "Нууц үг буруу байна" });
         }
         const accessToken = jsonwebtoken_1.default.sign({ id: one._id, role: one.role }, `${process.env.SECRET_KEY}`, { expiresIn: 86400 });
-        res.status(200).json({ accessToken });
+        res.status(200).json({ accessToken, one });
     });
 }
 exports.authenticateUser = authenticateUser;
