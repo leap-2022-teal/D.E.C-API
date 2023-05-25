@@ -2,8 +2,20 @@ import { Request, Response } from "express";
 import { Order } from "./order.model";
 
 export async function getOrder(req: Request, res: Response) {
-  const list = await Order.find({}, null);
-  res.json(list);
+  const { customer } = req.query;
+  console.log(customer);
+  if (customer) {
+    try {
+      const list = await Order.find({ customer: customer }, "", { sort: { orderDate: 1 } });
+      console.log(list);
+      res.json(list);
+    } catch (error) {
+      res.status(400).send("Invalid parentId");
+    }
+  } else {
+    const list = await Order.find({}, "", { sort: { orderDate: 1 } });
+    res.json(list);
+  }
 }
 export async function getOrderById(req: Request, res: Response) {
   const { id } = req.params;
@@ -12,7 +24,6 @@ export async function getOrderById(req: Request, res: Response) {
 }
 export async function createNewOrder(req: Request, res: Response) {
   const newOrders = req.body;
-  console.log(newOrders);
   await Order.create(newOrders);
   try {
     res.json(newOrders._id);
@@ -36,5 +47,4 @@ export async function updateOrderById(req: Request, res: Response) {
   } else {
     res.json({ message: "not found" });
   }
-  // console.log(updatedFields);
 }

@@ -12,7 +12,6 @@ export async function getProduct(req: Request, res: Response) {
     color?: string[];
     price?: string | string[];
   };
-  console.log(req.query);
   const filter: any = {};
 
   if (color?.length) {
@@ -46,7 +45,6 @@ export async function getProduct(req: Request, res: Response) {
       filter["$or"] = priceConditions;
     }
   }
-  console.log(filter);
 
   const list = await products.find(filter).maxTimeMS(20000).limit(Number(limit));
   res.json(list);

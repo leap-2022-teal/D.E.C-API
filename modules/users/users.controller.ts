@@ -25,8 +25,6 @@ export async function getUsersById(req: Request, res: Response) {
 }
 export async function createNewUsers(req: Request, res: Response) {
   const newUsers = req.body;
-  console.log(req, "this req");
-  console.log(newUsers, "new user");
   if (newUsers.address) {
     newUsers.isGuest = true;
   }
@@ -47,12 +45,11 @@ export async function updateUsersById(req: Request, res: Response) {
   const { id } = req.params;
   const updatedFields = req.body;
   await users.findByIdAndUpdate({ _id: id }, updatedFields);
-  res.json({ updatedId: id });
+  res.json(id);
 }
 
 export async function userRegistration(req: Request, res: Response) {
   const { formData } = req.body;
-  console.log(formData, "hi data");
   const myPlaintextPassword = formData.password;
   const oneList = await users.findOne({ $and: [{ email: formData.email }, { isGuest: false }] });
 

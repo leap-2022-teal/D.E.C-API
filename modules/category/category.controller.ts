@@ -11,7 +11,6 @@ export async function getCategory(req: Request, res: Response) {
       const objParentId = new mongoose.Types.ObjectId(parentId);
       const list = await category.find({ $or: [{ name: qregex }, { parentId: objParentId }] }, "", { sort: { name: 1 } });
       res.json(list);
-      console.log(list);
     } catch (error) {
       res.status(400).send("Invalid parentId");
     }
@@ -29,7 +28,6 @@ export async function getCategoryById(req: Request, res: Response) {
 }
 export async function createNewCategory(req: Request, res: Response) {
   const newCategory = req.body;
-  console.log(newCategory);
   try {
     await category.create(newCategory);
     res.sendStatus(200);

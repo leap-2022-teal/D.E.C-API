@@ -45,8 +45,6 @@ exports.getUsersById = getUsersById;
 function createNewUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newUsers = req.body;
-        console.log(req, "this req");
-        console.log(newUsers, "new user");
         if (newUsers.address) {
             newUsers.isGuest = true;
         }
@@ -73,14 +71,13 @@ function updateUsersById(req, res) {
         const { id } = req.params;
         const updatedFields = req.body;
         yield users_model_1.users.findByIdAndUpdate({ _id: id }, updatedFields);
-        res.json({ updatedId: id });
+        res.json(id);
     });
 }
 exports.updateUsersById = updateUsersById;
 function userRegistration(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { formData } = req.body;
-        console.log(formData, "hi data");
         const myPlaintextPassword = formData.password;
         const oneList = yield users_model_1.users.findOne({ $and: [{ email: formData.email }, { isGuest: false }] });
         if (oneList) {
