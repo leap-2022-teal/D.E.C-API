@@ -12,7 +12,6 @@ export async function getBannerById(req: Request, res: Response) {
 }
 export async function createNewBanner(req: Request, res: Response) {
   const newBanner = req.body;
-  console.log(newBanner);
   await Banner.create(newBanner);
   res.sendStatus(200);
 }
@@ -26,5 +25,4 @@ export async function updateBannerById(req: Request, res: Response) {
   const updatedFields = req.body;
   await Banner.findByIdAndUpdate({ _id: id }, updatedFields);
   res.json({ updatedId: id });
-  console.log(updatedFields)
 }

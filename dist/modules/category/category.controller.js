@@ -25,7 +25,6 @@ function getCategory(req, res) {
                 const objParentId = new mongoose_1.default.Types.ObjectId(parentId);
                 const list = yield category_model_1.category.find({ $or: [{ name: qregex }, { parentId: objParentId }] }, "", { sort: { name: 1 } });
                 res.json(list);
-                console.log(list);
             }
             catch (error) {
                 res.status(400).send("Invalid parentId");
@@ -49,7 +48,6 @@ exports.getCategoryById = getCategoryById;
 function createNewCategory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newCategory = req.body;
-        console.log(newCategory);
         try {
             yield category_model_1.category.create(newCategory);
             res.sendStatus(200);

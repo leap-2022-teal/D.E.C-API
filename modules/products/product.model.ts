@@ -22,7 +22,7 @@ interface Products {
   categoryId: ObjectId;
   subCategoryId: ObjectId;
 }
-const productsScema = new Schema<Products>({
+export const productsScema = new Schema<Products>({
   name: { type: String },
   color: { type: String },
   image: [

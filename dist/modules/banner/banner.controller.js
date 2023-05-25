@@ -29,7 +29,6 @@ exports.getBannerById = getBannerById;
 function createNewBanner(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newBanner = req.body;
-        console.log(newBanner);
         yield banner_model_1.Banner.create(newBanner);
         res.sendStatus(200);
     });
@@ -49,7 +48,6 @@ function updateBannerById(req, res) {
         const updatedFields = req.body;
         yield banner_model_1.Banner.findByIdAndUpdate({ _id: id }, updatedFields);
         res.json({ updatedId: id });
-        console.log(updatedFields);
     });
 }
 exports.updateBannerById = updateBannerById;

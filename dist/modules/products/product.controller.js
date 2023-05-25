@@ -15,7 +15,6 @@ function getProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { limit } = req.query;
         const { searchQuery, categoryId, categoryIds, size, color, price } = req.query;
-        console.log(req.query);
         const filter = {};
         if (color === null || color === void 0 ? void 0 : color.length) {
             filter.color = { $in: color };
@@ -44,7 +43,6 @@ function getProduct(req, res) {
                 filter["$or"] = priceConditions;
             }
         }
-        console.log(filter);
         const list = yield product_model_1.products.find(filter).maxTimeMS(20000).limit(Number(limit));
         res.json(list);
     });

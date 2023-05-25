@@ -13,8 +13,22 @@ exports.updateOrderById = exports.deleteOrderById = exports.createNewOrder = exp
 const order_model_1 = require("./order.model");
 function getOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const list = yield order_model_1.Order.find({}, null);
-        res.json(list);
+        const { customer } = req.query;
+        console.log(customer);
+        if (customer) {
+            try {
+                const list = yield order_model_1.Order.find({ customer: customer }, "", { sort: { orderDate: 1 } });
+                console.log(list);
+                res.json(list);
+            }
+            catch (error) {
+                res.status(400).send("Invalid parentId");
+            }
+        }
+        else {
+            const list = yield order_model_1.Order.find({}, "", { sort: { orderDate: 1 } });
+            res.json(list);
+        }
     });
 }
 exports.getOrder = getOrder;
@@ -29,7 +43,6 @@ exports.getOrderById = getOrderById;
 function createNewOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newOrders = req.body;
-        console.log(newOrders);
         yield order_model_1.Order.create(newOrders);
         try {
             res.json(newOrders._id);
@@ -61,7 +74,6 @@ function updateOrderById(req, res) {
         else {
             res.json({ message: "not found" });
         }
-        // console.log(updatedFields);
     });
 }
 exports.updateOrderById = updateOrderById;
