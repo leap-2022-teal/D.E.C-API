@@ -45,7 +45,7 @@ function createNewOrder(req, res) {
         const newOrders = req.body;
         yield order_model_1.Order.create(newOrders);
         try {
-            res.json(newOrders._id);
+            res.json(newOrders.products);
         }
         catch (_a) {
             res.sendStatus(500);

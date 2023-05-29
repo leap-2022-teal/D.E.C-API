@@ -26,7 +26,7 @@ export async function createNewOrder(req: Request, res: Response) {
   const newOrders = req.body;
   await Order.create(newOrders);
   try {
-    res.json(newOrders._id);
+    res.json(newOrders.products);
   } catch {
     res.sendStatus(500);
   }
